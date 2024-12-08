@@ -11,7 +11,7 @@ export default function PMM({ params } : {params: { queue_id: string };}) {
                     <ChatBox />
                 </div>
                 <div className="h-full w-2/5 flex justify-center items-center">
-                    avatar
+                    <img src="Avatar.gif" />
                 </div>
             </div>
         </main>

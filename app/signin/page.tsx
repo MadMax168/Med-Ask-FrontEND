@@ -8,14 +8,14 @@ import {
     CardFooter,
     CardHeader,
     CardTitle,
-  } from "@/components/ui/card"
+} from "@/components/ui/card"
   
 
 export default function SIGNIN() {
     return (
         <main className="h-screen w-screen">
             <div className="h-full flex justify-center items-center">
-                <form className="h-1/2 w-1/4">
+                <form className="h-1/2 w-[500px]">
                     <Card className="h-auto w-full p-2">
                         <CardHeader>
                             <CardTitle className="text-xl text-center text-slate-800 font-extrabold">
@@ -44,6 +44,7 @@ export default function SIGNIN() {
                                 <br />
                                 <div className="h-10">
                                     <Input type="password" placeholder="password" />
+                                    <a href="" className="text-right text-red-700 text-xs">*Forgot Password</a>
                                 </div>
                             </div>
                         </CardContent>

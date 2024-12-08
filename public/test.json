@@ -1,0 +1,13 @@
+{
+  "ehr_data": {
+    "name": {
+      "prefix": "นางสาว",
+      "firstname": "พิณวรรณ",
+      "surname": "ใกล้สาย"
+    },
+    "gender": "หญิง",
+    "age": 20,
+    "chief_complaint": "ปวดท้องประจำเดือน",
+    "present_illness": "ไม่แพ้ยา"
+  }
+}

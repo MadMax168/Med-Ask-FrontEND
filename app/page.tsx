@@ -24,7 +24,7 @@ export default function Home() {
       <div className="h-screen w-3/5 flex justify-center items-center">
           <div className="h-1/2 w-3/5 flex flex-col py-12 gap-12 items-center">
             <div className="transition-all text-5xl font-bold tracking-wide">กรุณากรอกเลขคิว</div>
-            <form onSubmit={QSubmit} className="h-16 w-4/5 flex gap-3">
+            <form onSubmit={QSubmit} className="h-16 w-full flex gap-3">
               <Input
                 ref={inputRef}
                 type="text"
@@ -37,7 +37,7 @@ export default function Home() {
           </div>
         </div>
         <div className="h-screen w-2/5 flex justify-center items-center">
-          avatar
+          <img src="Avatar.gif" />
         </div>
     </main>
   );
