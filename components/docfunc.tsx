@@ -73,23 +73,41 @@ const readJson = (data: any): string[] => {
 };
 
 const JSONReader = async () => {
-  const filePath = path.join(process.cwd(), "public", "test.json");
-  const fileContents = fs.readFileSync(filePath, "utf8");
-  const ehrData = JSON.parse(fileContents);
+  let ehrData = null;
 
-  const processedData = readJson(ehrData);
+  try {
+
+    const filePath = path.join(process.cwd(), "public", "test.json"); {/* path.join(process.cwd(), "location", "filename.json") */}
+    const fileContents = fs.readFileSync(filePath, "utf8");
+    const jsonData = JSON.parse(fileContents);
+
+    ehrData = jsonData.ehr_data;
+  } catch (error) {
+    console.error("Error reading or parsing JSON file:", error);
+    return (
+      <div className="bg-white h-full w-full p-4 border rounded-lg shadow-md">
+        <p>Error loading data</p>
+      </div>
+    );
+  }
+
+    const processedData = ehrData ? readJson(ehrData) : [];
 
   return (
     <div className="bg-white h-full w-full p-4 border rounded-lg shadow-md">
       <h1 className="text-2xl font-bold mb-4">Summary</h1><hr />
-      {processedData.map((item, index) => (
-        <p 
-          key={index} 
-          className="my-2 text-base font-mono border p-2 rounded-lg shadow-md"
-        >
-          {item}
-        </p>
-      ))}
+      {processedData.length > 0 ? (
+        processedData.map((item, index) => (
+          <p
+            key={index}
+            className="my-2 text-base font-mono border p-2 rounded-lg shadow-md"
+          >
+            {item}
+          </p>
+        ))
+      ) : (
+        <p>No data available</p>
+      )}
     </div>
   );
 };

@@ -1,6 +1,12 @@
 import { ChatBox } from "@/components/chat";
+import { notFound } from 'next/navigation'
 
 export default function PMM({ params } : {params: { queue_id: string };}) {
+    if (!isValidQueue(params.queue_id)) {
+        // Return a 404 page if the slug doesn't match the requirements
+        notFound()
+    }
+    
     return (
         <main className="h-screen w-screen">
             <div className="h-[75px] w-full flex items-center">
@@ -16,4 +22,25 @@ export default function PMM({ params } : {params: { queue_id: string };}) {
             </div>
         </main>
     )
+}
+
+function isValidQueue(queue_id : string): boolean {
+    // Check if slug exists and has minimum required length
+    if (!queue_id || queue_id.length != 4) {
+      return false
+    }
+  
+    // Check first letter is uppercase A-Z
+    const firstLetter = queue_id.charAt(0)
+    if (!/^[A-Z]$/.test(firstLetter)) {
+      return false
+    }
+  
+    // Check last 3 characters are numbers
+    const lastThreeChars = queue_id.slice(-3)
+    if (!/^\d{3}$/.test(lastThreeChars)) {
+      return false
+    }
+  
+    return true
 }

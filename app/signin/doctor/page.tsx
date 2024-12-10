@@ -8,7 +8,7 @@ export default function doc(){
     <main className="w-screen h-screen flex">
       <div className="w-1/2 h-full flex flex-col justify-between">
         <div className="w-full h-[70px] pl-20 flex items-center">
-          <h1>[username]</h1>
+          <h1>[username]</h1> {/* Link with database(user) */}
         </div>
         <div className="w-full h-auto p-2"> {/* Search form */}
           <SearchBox />
