@@ -1,6 +1,12 @@
+"use client"
+
 import { ChatBox } from "@/components/chat";
 import { notFound } from 'next/navigation'
+import Image from "next/image";
+import { useState } from "react";
+import { MiniTuber } from "@/components/avatar"
 
+  
 export default function PMM({ params } : {params: { queue_id: string };}) {
     if (!isValidQueue(params.queue_id)) {
         // Return a 404 page if the slug doesn't match the requirements
@@ -8,16 +14,16 @@ export default function PMM({ params } : {params: { queue_id: string };}) {
     }
     
     return (
-        <main className="h-screen w-screen">
+        <main className="h-3/4 w-full justify-center items-center  ">
             <div className="h-[75px] w-full flex items-center">
                 <div className="text-4xl font-bold ml-20 text-blue-700">{params.queue_id}</div>
             </div>
-            <div className="h-full w-full flex">
-                <div className="h-full w-3/5 pt-10 flex justify-center">
+            <div className="h-full w-full flex flex-col-reverse sm:flex-row justify-center items-center">
+                <div className="h-full w-full pt-10 flex justify-center">
                     <ChatBox />
                 </div>
-                <div className="h-full w-2/5 flex justify-center items-center">
-                    <img src="Avatar.gif" />
+                <div className="h-full w-3/5 flex justify-center items-center">
+                    <MiniTuber />
                 </div>
             </div>
         </main>

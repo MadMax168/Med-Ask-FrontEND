@@ -6,13 +6,13 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button";
 
 export default function Home() {
-  const inputRef = useRef();
+  const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
   const QSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const inputValue = inputRef.current?.value.trim();
-    if (inputValue.match(/^^[A-B][0-9]{3}$/)) {
+    if (inputValue?.match(/^^[A-B][0-9]{3}$/)) {
       router.push(`/${inputValue}`);
     } else {
       alert('We do not have this queue, please try again.(Ex.A001)');
