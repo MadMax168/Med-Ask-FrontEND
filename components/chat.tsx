@@ -4,11 +4,11 @@ import { ThumbsDown, ThumbsUp } from "lucide-react";
 import React, { useState, useRef, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { fetchGeneratedVoice, VoiceRequestBotnoi } from "@/api/tts";
+import { fetchGeneratedVoice } from "@/api/tts";
 import useSpeakingStore from "@/stores/useSpeakingStore";
 
 const API_BASE_URL = "https://microhum-mali-nurse-rest-api.hf.space";
-
+const tts_service = "botnoi" // "vaja9" | "botnoi"
 interface ExtendedMessage {
   id: number;
   text: string;
@@ -130,12 +130,13 @@ export function ChatBox() {
     );
   };
 
+  // AI Sound Synthesis Service
   const [loading, setLoading] = useState(false);
   const { isSpeaking, setSpeaking } = useSpeakingStore();
   const handleGenerateVoice = async (text: string) => {
     setLoading(true);
     try {
-      const mp3Blob = await fetchGeneratedVoice(text);
+      const mp3Blob = await fetchGeneratedVoice({service: tts_service, text: text});
       const url = URL.createObjectURL(mp3Blob);
       const audio = new Audio(url);
         audio.play();
@@ -169,8 +170,8 @@ export function ChatBox() {
         {messages.map((message) => (
           <div
             key={message.id}
-            className={`flex mb-4 ${
-              message.sender === "user" ? "justify-end" : "justify-start"
+            className={`flex ${
+              message.sender === "user" ? "justify-end mb-6" : "justify-start mb-10"
             }`}
           >
             <div

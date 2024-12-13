@@ -4,6 +4,7 @@ import { useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button";
+import { MiniTuber } from '@/components/avatar';
 
 export default function Home() {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -37,7 +38,7 @@ export default function Home() {
           </div>
         </div>
         <div className="h-screen w-2/5 flex justify-center items-center">
-          <img src="Avatar.gif" />
+          <MiniTuber />
         </div>
     </main>
   );

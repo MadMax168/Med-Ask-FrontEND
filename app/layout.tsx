@@ -4,6 +4,11 @@ import { AppSidebar } from "@/components/app-sidebar"
 import localFont from "next/font/local";
 import "./globals.css";
 
+const fcVisionRounded = localFont({
+  src: "./fonts/FC Vision Rounded.otf",
+  variable: "--font-fc-vision-rounded",
+  weight: "400 700",
+});
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -24,7 +29,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${fcVisionRounded.variable} ${fcVisionRounded.variable} antialiased`}
       >
         <SidebarProvider className="overflow-hidden">
           <AppSidebar />
