@@ -1,4 +1,4 @@
-import useSpeakingStore from "@/stores/useSpeakingStore";
+import useChatbotStore from "@/stores/useChatbotStore";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { Volume, Volume1, Volume2 } from "lucide-react";
@@ -25,7 +25,7 @@ const VolumeLoop = () => {
   );
 };
 export const MiniTuber = () => {
-  const { isSpeaking, setSpeaking } = useSpeakingStore();
+  const { isSpeaking, setSpeaking } = useChatbotStore();
   const fadeVariants = {
     hidden: { opacity: 0, duration: 0.5 },
     visible: { opacity: 1, duration: 0.5 },

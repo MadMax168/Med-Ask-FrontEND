@@ -5,33 +5,39 @@ import React, { useState, useRef, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { fetchGeneratedVoice } from "@/api/tts";
-import useSpeakingStore from "@/stores/useSpeakingStore";
-
+import useChatbotStore, { ExtendedMessage } from "@/stores/useChatbotStore";
+    
 const API_BASE_URL = "https://microhum-mali-nurse-rest-api.hf.space";
-const tts_service = "botnoi" // "vaja9" | "botnoi"
-interface ExtendedMessage {
-  id: number;
-  text: string;
-  sender: "user" | "nurse";
-  type: string;
-  feedback?: "liked" | "disliked" | null;
+const tts_service = "botnoi"; // "vaja9" | "botnoi"
+const model_name = "openthaigpt"; 
+
+export async function resetChatBot() {
+    console.log("Fired Reset");
+    try {
+        await fetch(`${API_BASE_URL}/reset`, {
+            method: "POST",
+            headers: {},
+        });
+        console.log("Endpoint reset completed");
+    } catch (error) {
+        console.error("Error resetting endpoint:", error);
+    }
 }
 
 export function ChatBox() {
-  const [messages, setMessages] = useState<ExtendedMessage[]>([
-    {
-      id: 1,
-      text: "สวัสดีค่ะ ดิฉัน มะลิ เป็นพยาบาลเสมือนที่จะมาดูแลการซักประวัตินะคะ",
-      sender: "nurse",
-      type: "",
-      feedback: null,
-    },
-  ]);
-
-  const [inputMessage, setInputMessage] = useState("");
+  // Request Reset everytime component first loaded
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const {
+    messages,
+    setMessages,
+    inputMessage,
+    setInputMessage,
+    isLoading,
+    setIsLoading,
+    error,
+    setError,
+    setFeedback,
+  } = useChatbotStore();
 
   const scrollToBottom = () => {
     if (messagesEndRef.current) {
@@ -48,7 +54,7 @@ export function ChatBox() {
 
   const handleSendMessage = async () => {
     if (!inputMessage.trim()) return;
-
+    
     const userMessageId = messages.length + 1;
     const newUserMessage: ExtendedMessage = {
       id: userMessageId,
@@ -59,7 +65,7 @@ export function ChatBox() {
     };
 
     setInputMessage("");
-    setMessages((prev) => [...prev, newUserMessage]);
+    setMessages(newUserMessage);
     setIsLoading(true);
     setError(null);
 
@@ -78,6 +84,7 @@ export function ChatBox() {
         },
         body: JSON.stringify({
           user_input: userInput,
+          model_name: model_name
         }),
       });
 
@@ -105,7 +112,7 @@ export function ChatBox() {
         feedback: null,
       };
 
-      setMessages((prev) => [...prev, newNurseMessage]);
+      setMessages(newNurseMessage);
       handleGenerateVoice(nurseResponse);
     } catch (error) {
       console.error("Error:", error);
@@ -118,32 +125,26 @@ export function ChatBox() {
   };
 
   const handleLike = (messageId: number) => {
-    setMessages((prevMessages) =>
-      prevMessages.map((msg) =>
-        msg.id === messageId
-          ? {
-              ...msg,
-              feedback: msg.feedback === "liked" ? null : "liked",
-            }
-          : msg
-      )
-    );
+    setFeedback(messageId, "liked");
   };
 
   // AI Sound Synthesis Service
   const [loading, setLoading] = useState(false);
-  const { isSpeaking, setSpeaking } = useSpeakingStore();
+  const { isSpeaking, setSpeaking } = useChatbotStore();
   const handleGenerateVoice = async (text: string) => {
     setLoading(true);
     try {
-      const mp3Blob = await fetchGeneratedVoice({service: tts_service, text: text});
+      const mp3Blob = await fetchGeneratedVoice({
+        service: tts_service,
+        text: text,
+      });
       const url = URL.createObjectURL(mp3Blob);
       const audio = new Audio(url);
-        audio.play();
-        setSpeaking(true);
-        audio.onended = () => {
-            setSpeaking(false);
-        };
+      audio.play();
+      setSpeaking(true);
+      audio.onended = () => {
+        setSpeaking(false);
+      };
     } catch (e: any) {
       setError(e.message || "An error occurred while generating the voice");
     } finally {
@@ -152,16 +153,7 @@ export function ChatBox() {
   };
 
   const handleDislike = (messageId: number) => {
-    setMessages((prevMessages) =>
-      prevMessages.map((msg) =>
-        msg.id === messageId
-          ? {
-              ...msg,
-              feedback: msg.feedback === "disliked" ? null : "disliked",
-            }
-          : msg
-      )
-    );
+    setFeedback(messageId, "disliked");
   };
 
   return (
@@ -171,7 +163,9 @@ export function ChatBox() {
           <div
             key={message.id}
             className={`flex ${
-              message.sender === "user" ? "justify-end mb-6" : "justify-start mb-10"
+              message.sender === "user"
+                ? "justify-end mb-6"
+                : "justify-start mb-10"
             }`}
           >
             <div
@@ -209,6 +203,13 @@ export function ChatBox() {
             </div>
           </div>
         ))}
+
+        {/* Skeleton Chatbox */}
+        {isLoading && (
+          <div className="flex justify-start mb-6">
+            <div className="relative min-w-[80%] min-h-12 p-5 rounded-lg bg-gray-200 duration-1000 animate-pulse text-black"></div>
+          </div>
+        )}
         <div ref={messagesEndRef} />
       </div>
       <div className="h-[50px] flex space-x-2">
