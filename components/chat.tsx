@@ -157,7 +157,7 @@ export function ChatBox() {
   };
 
   return (
-    <div className="h-full w-4/5 border rounded-t-xl p-2 bg-white flex flex-col gap-10">
+    <div className="h-full max-h-[80%] w-4/5 border rounded-t-xl p-2 bg-white flex flex-col gap-10">
       <div className="h-4/5 w-full p-2 overflow-y-auto bg-white">
         {messages.map((message) => (
           <div

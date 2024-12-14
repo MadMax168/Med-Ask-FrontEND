@@ -77,7 +77,7 @@ const volumeVariants = {
     </motion.div>
       {isSpeaking ? (
         <motion.div
-          className="absolute opacity-80 animate-pulse left-0"
+          className="absolute text-yellow-200 animate-pulse left-0"
           variants={volumeVariants}
           animate={isSpeaking ? "speaking" : "speaking"}
         >

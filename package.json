@@ -6,13 +6,15 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test-db": "tsx test/save_data_testing.ts"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.2",
     "@radix-ui/react-separator": "^1.1.0",
     "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-tooltip": "^1.1.4",
+    "@supabase/supabase-js": "^2.47.7",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "framer-motion": "^11.14.4",
@@ -32,6 +34,7 @@
     "eslint-config-next": "15.0.3",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
+    "tsx": "^4.19.2",
     "typescript": "^5"
   }
 }

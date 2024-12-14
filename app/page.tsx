@@ -33,14 +33,20 @@ export default function Home() {
   };
 
   return (
-    <main className="h-screen w-screen flex">
+    <main className="relative h-screen w-screen flex">
+      <div className="radial-glow -top-[10rem] right-[25rem]"></div>
+      <div className="radial-glow -bottom-[7rem] left-0"></div>
+      <div className="radial-glow bottom-0 right-0"></div>
+      
       <div className="h-screen w-3/5 flex flex-col justify-center items-center">
         {/* Breadboard */}
         <Breadboard />
         <div className="h-1/2 w-3/5 flex flex-col py-12 gap-12 items-center">
-          <div className="text-3xl">สวัสดีค่ะ, ยินดีต้อนรับคนไข้</div>
+          <div className="text-3xl">สวัสดีค่ะ ดิฉัน "มะลิ", ยินดีต้อนรับค่ะ</div>
           <div className="transition-all text-5xl font-bold tracking-wide">
+            
             กรุณากรอกเลขคิว
+            
           </div>
           <form onSubmit={QSubmit} className="h-16 w-full flex gap-3">
             <Input ref={inputRef} type="text" placeholder="A001" />

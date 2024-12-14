@@ -1,8 +1,22 @@
-import JSONReader,{ SearchBox, DataTable } from "@/components/docfunc"
+
+"use client"
+
+import { SearchBox, DataTable, JSONReader, fetchEHR } from "@/components/docfunc"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
+import { useEffect, useState } from "react";
 
 export default function doc(){
+  const [EHR_data, setEHR_data] = useState(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      const data: any = await fetchEHR();
+      console.log(data)
+      setEHR_data(data);
+    }
+    fetchData();
+  }, []);
 
   return (
     <main className="w-screen h-screen p-7 flex flex-row">
@@ -19,7 +33,7 @@ export default function doc(){
       </div>
       <div className="w-1/2 h-full"> {/* Summary*/}
         <div className="w-full p-2">
-          <JSONReader />
+          <JSONReader ehr_data={EHR_data} />
         </div>
         <div className="w-full h-auto p-2"> {/* Advice form */}
           <div className="w-full h-full p-4 flex flex-col justify-between bg-white border rounded-xl shadow-md">
