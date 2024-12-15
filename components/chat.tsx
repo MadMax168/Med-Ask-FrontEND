@@ -226,13 +226,14 @@ export function ChatBox() {
       audio.play();
       setSpeaking(true);
       audio.onended = () => {
+        setRecognitionStatus('active');
         setSpeaking(false);
       };
       
-      setRecognitionStatus('active');
     } catch (e: any) {
       setError(e.message || "An error occurred while generating the voice");
     } finally {
+      setRecognitionStatus('active');
       setLoading(false);
     }
   };
