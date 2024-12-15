@@ -14,6 +14,8 @@ interface ChatbotState {
     initMessages: () => void;
     setMessages: (messages: ExtendedMessage) => void;
     setFeedback: (id: number, feedback: "liked" | "disliked" | null) => void;
+    isFinished: boolean;
+    setFinished: (finished: boolean) => void;
 }
 
 export interface ExtendedMessage {
@@ -49,6 +51,7 @@ const useChatbotStore = create<ChatbotState>((set) => ({
             message.id === id ? { ...message, feedback } : message
         ),
     })),
+    isFinished: false,
+    setFinished: (finished) => set({ isFinished: finished }),
 }));
-
 export default useChatbotStore;
