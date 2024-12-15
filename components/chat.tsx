@@ -1,6 +1,6 @@
 "use client";
 
-import { ThumbsDown, ThumbsUp } from "lucide-react";
+import { MessageCircle, MessageSquare, Mic, ThumbsDown, ThumbsUp } from "lucide-react";
 import React, { useState, useRef, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -39,7 +39,7 @@ export function ChatBox() {
   } = useChatbotStore();
 
   const [recognizedText, setRecognizedText] = useState("");
-
+  const [showInputField, setShowInputField] = useState(false);
   const { isSpeaking, setSpeaking } = useChatbotStore();
 
   const scrollToBottom = () => {
@@ -55,24 +55,26 @@ export function ChatBox() {
     scrollToBottom();
   }, [messages]);
 
-  const [recognitionStatus, setRecognitionStatus] = useState<'active' | 'blocked'>('active');
+  const [recognitionStatus, setRecognitionStatus] = useState<
+    "active" | "blocked"
+  >("active");
 
   useEffect(() => {
-    const texts = document.querySelector('.texts')!;
+    const texts = document.querySelector(".texts")!;
     const recognition = new webkitSpeechRecognition();
-    recognition.lang = 'th-TH';
+    recognition.lang = "th-TH";
     recognition.continuous = true;
     recognition.interimResults = true;
 
     // Block recognition after message sent
-    if (recognitionStatus === 'blocked') {
+    if (recognitionStatus === "blocked") {
       recognition.stop();
       return () => {
         recognition.stop();
       };
     }
 
-    recognition.addEventListener('result', function (event) {
+    recognition.addEventListener("result", function (event) {
       const resultIndex = event.results.length - 1;
       const result = event.results[resultIndex];
       const text = result[0].transcript;
@@ -81,18 +83,13 @@ export function ChatBox() {
       console.log("Message: " + text);
       console.log("Is Final: ", isFinal);
 
-      let p = document.createElement('p');
-      p.innerText = text;
-
-      // Clear previous content and add new sentence
-      texts.innerHTML = '';
-      texts.appendChild(p);
+      setRecognizedText(text);
 
       if (isFinal) {
         // Send the recognized speech to chatbot if final
         if (text.trim()) {
           // Block recognition after sending message
-          setRecognitionStatus('blocked');
+          setRecognitionStatus("blocked");
           handleSendMessage(text);
         }
       }
@@ -139,8 +136,6 @@ export function ChatBox() {
   //   }
   // };
 
-
-
   // const handleSendMessage = async (message: string) => {
   //   if (!message.trim()) return;
 
@@ -161,7 +156,10 @@ export function ChatBox() {
   //   await getNurseResponse(message, userMessageId + 1);
   // };
 
-  const getNurseResponse = async (userInput: string, nurseMessageId: number) => {
+  const getNurseResponse = async (
+    userInput: string,
+    nurseMessageId: number
+  ) => {
     try {
       const response = await fetch(`${API_BASE_URL}/nurse_response`, {
         method: "POST",
@@ -176,13 +174,19 @@ export function ChatBox() {
 
       if (!response.ok) {
         const errorBody = await response.text();
-        throw new Error(`HTTP error! status: ${response.status}, body: ${errorBody}`);
+        throw new Error(
+          `HTTP error! status: ${response.status}, body: ${errorBody}`
+        );
       }
 
       const data = await response.json();
       console.log("Full API Response:", data);
 
-      const nurseResponse = data.nurse_response || data.response || data.text || "No response received";
+      const nurseResponse =
+        data.nurse_response ||
+        data.response ||
+        data.text ||
+        "No response received";
 
       const newNurseMessage: ExtendedMessage = {
         id: nurseMessageId,
@@ -194,10 +198,11 @@ export function ChatBox() {
 
       setMessages(newNurseMessage);
       handleGenerateVoice(nurseResponse);
-      
     } catch (error) {
       console.error("Error:", error);
-      setError(error instanceof Error ? error.message : "An unknown error occurred");
+      setError(
+        error instanceof Error ? error.message : "An unknown error occurred"
+      );
     } finally {
       setIsLoading(false);
     }
@@ -213,7 +218,6 @@ export function ChatBox() {
 
   const [loading, setLoading] = useState(false);
 
-
   const handleGenerateVoice = async (text: string) => {
     setLoading(true);
     try {
@@ -226,41 +230,56 @@ export function ChatBox() {
       audio.play();
       setSpeaking(true);
       audio.onended = () => {
-        setRecognitionStatus('active');
+        setRecognitionStatus("active");
         setSpeaking(false);
       };
-      
     } catch (e: any) {
       setError(e.message || "An error occurred while generating the voice");
     } finally {
-      setRecognitionStatus('active');
+      setRecognitionStatus("active");
       setLoading(false);
     }
   };
 
   return (
-    <div className="h-full max-h-[80%] w-4/5 border rounded-t-xl p-2 bg-white flex flex-col gap-10">
+    <div className="h-full max-h-[80%] w-4/5 border rounded-t-xl p-2 bg-white flex flex-col gap-4">
       <div className="h-4/5 w-full p-2 overflow-y-auto bg-white">
         {messages.map((message, index) => (
           <div
-            key={`${message.id}-${index}`}  // Combine message.id and index to ensure uniqueness
-            className={`flex ${message.sender === "user" ? "justify-end mb-6" : "justify-start mb-10"}`}
+            key={`${message.id}-${index}`} // Combine message.id and index to ensure uniqueness
+            className={`flex ${
+              message.sender === "user"
+                ? "justify-end mb-6"
+                : "justify-start mb-10"
+            }`}
           >
             <div
-              className={`relative max-w-[80%] p-3 rounded-lg ${message.sender === "user" ? "bg-gray-100 text-black" : "bg-gray-100 text-black"}`}
+              className={`relative max-w-[80%] p-3 rounded-lg ${
+                message.sender === "user"
+                  ? "bg-gray-100 text-black"
+                  : "bg-gray-100 text-black"
+              }`}
             >
               {message.text}
               {message.sender === "nurse" && (
                 <div className="absolute -bottom-6 right-0 flex space-x-2 mt-2">
                   <button
                     onClick={() => handleLike(message.id)}
-                    className={`flex items-center space-x-1 ${message.feedback === "liked" ? "text-green-600" : "text-gray-500 hover:text-green-600"}`}
+                    className={`flex items-center space-x-1 ${
+                      message.feedback === "liked"
+                        ? "text-green-600"
+                        : "text-gray-500 hover:text-green-600"
+                    }`}
                   >
                     <ThumbsUp size={16} />
                   </button>
                   <button
                     onClick={() => handleDislike(message.id)}
-                    className={`flex items-center space-x-1 ${message.feedback === "disliked" ? "text-red-600" : "text-gray-500 hover:text-red-600"}`}
+                    className={`flex items-center space-x-1 ${
+                      message.feedback === "disliked"
+                        ? "text-red-600"
+                        : "text-gray-500 hover:text-red-600"
+                    }`}
                   >
                     <ThumbsDown size={16} />
                   </button>
@@ -270,8 +289,6 @@ export function ChatBox() {
           </div>
         ))}
 
-
-
         {isLoading && (
           <div className="flex justify-start mb-6">
             <div className="relative min-w-[80%] min-h-12 p-5 rounded-lg bg-gray-200 duration-1000 animate-pulse text-black"></div>
@@ -280,27 +297,58 @@ export function ChatBox() {
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="h-[50px] flex space-x-2">
-        <Input
-          value={inputMessage}
-          onChange={(e) => setInputMessage(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && handleSendMessage(e.target.value)}
-          placeholder="Type your message..."
-          className="flex-grow"
-        />
+      
+      {showInputField && (
+        <div className="h-[50px] flex space-x-2">
+          <Input
+            value={inputMessage}
+            onChange={(e) => setInputMessage(e.target.value)}
+            onKeyDown={(e) =>
+              e.key === "Enter" &&
+              handleSendMessage((e.target as HTMLInputElement).value)
+            }
+            placeholder="Type your message..."
+            className="flex-grow"
+          />
+          <Button
+            onClick={() => handleSendMessage(inputMessage)}
+            disabled={isLoading}
+            className="h-full w-[150px]"
+          >
+            Send
+          </Button>
+        </div>
+      )}
+      <div className="p-5 bg-gray-100 rounded-3xl flex justify-between">
+        <div className="inline-flex gap-2 items-center">
+          <Mic
+            className={`duration-1000 ${
+              recognitionStatus === "active"
+                ? "text-green-500 animate-pulse"
+                : "text-red-500"
+            }`}
+          />
+          {recognitionStatus === "active" && (
+            <div className="text-green-500">Now speaking...</div>
+          )}
+          <div
+            className={`duration-1000 ${
+              recognitionStatus === "active"
+                ? "text-gray-500 animate-pulse"
+                : "text-black"
+            }`}
+          >
+            {recognizedText}
+          </div>
+        </div>
+        <div className="h-[50px] flex space-x-2">
         <Button
-          onClick={handleSendMessage}
-          disabled={isLoading}
-          className="h-full w-[150px]"
+          onClick={() => setShowInputField(!showInputField)}
+          className="bg-gray-300 text-gray-600 h-full w-auto"
         >
-          Send
+          <MessageCircle />
         </Button>
       </div>
-      <div className="texts"></div>
-      <div className="texts">
-        {recognitionStatus === 'active'
-          ? 'Voice recognition 🟢'
-          : 'Voice recognition 🔴'}
       </div>
     </div>
   );
