@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { MiniTuber } from "@/components/avatar";
 import Breadboard from "@/components/breadboard";
 import { useStepStore } from "@/stores/useStepStore";
+import { saveDataAndChatHistory } from "@/test/save_data_testing";
 
 export default function Home() {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -19,6 +20,10 @@ export default function Home() {
     updateStepStatus(2, 0);
     // console.log(stepState);
   }, [updateStepStatus]);
+
+  useEffect(() => {
+    saveDataAndChatHistory();
+  }, []);
 
   const QSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,9 +39,7 @@ export default function Home() {
 
   return (
     <main className="relative h-screen w-screen flex">
-      <div className="radial-glow -top-[10rem] right-[25rem]"></div>
-      <div className="radial-glow -bottom-[7rem] left-0"></div>
-      <div className="radial-glow bottom-0 right-0"></div>
+      
       
       <div className="h-screen w-3/5 flex flex-col justify-center items-center">
         {/* Breadboard */}

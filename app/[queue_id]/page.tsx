@@ -9,7 +9,7 @@ import { useStepStore } from "@/stores/useStepStore";
 import Breadboard from "@/components/breadboard";
 import useChatbotStore from "@/stores/useChatbotStore";
 import { useRouter } from "next/navigation";
-import { BookCheck, CircleX, MessageCircleWarning } from "lucide-react";
+import { BookCheck, CircleX, MessageCircleWarning, Star } from "lucide-react";
 import router from "next/router";
 import { fetchEHR, JSONReader } from "@/components/docfunc";
 
@@ -18,7 +18,7 @@ const finish_keyword = "ฉันได้ข้อมูลที่ต้อ�
 const ConfirmationForm: React.FC = () => {
   const router = useRouter();
   const [EHR_data, setEHR_data] = useState(null);
-
+  
   useEffect(() => {
     async function fetchData() {
       const data: any = await fetchEHR();
@@ -39,7 +39,10 @@ const ConfirmationForm: React.FC = () => {
         <JSONReader ehr_data={EHR_data} />
       </div>
       <div className="flex flex-col h-full w-full justify-center items-center">
+      
         <div className="my-6 text-center">
+          {/* Ratings */}
+          
           <div className="text-xl my-2">ยืนยันข้อมูลของคุณหรือไม่?</div>
           <p className="text-sm text-red-500">
             ⚠️ โปรดใส่ใจ:
@@ -73,7 +76,7 @@ export default function PMM({
   const { queue_id } = use(params);
   const { stepState, updateStepStatus } = useStepStore();
   const { messages, initMessages } = useChatbotStore();
-  const [ isFinished, setFinished ] = useState(false);
+  const [isFinished, setFinished] = useState(true);
   // Push to finish page
   useEffect(() => {
     if (
@@ -82,15 +85,14 @@ export default function PMM({
       messages[messages.length - 1].sender == "nurse"
     ) {
       console.log("Finish keyword detected in the latest message.");
-      setFinished(true)
+      setFinished(true);
     }
   }, [messages]);
   if (!isValidQueue(queue_id)) {
     // Return a 404 page if the slug doesn't match the requirements
     notFound();
   }
-  
-  
+
   useEffect(() => {
     updateStepStatus(0, 2);
     updateStepStatus(1, 1);
@@ -102,9 +104,7 @@ export default function PMM({
 
   return (
     <main className="h-screen w-screen  ">
-      {isFinished ? (
-        <ConfirmationForm />
-      ) : ""}
+      {isFinished ? <ConfirmationForm /> : ""}
       <div className="h-[75px] w-full flex items-center">
         <div className="text-4xl ml-20 text-blue-700">
           คิวของคุณ: <b className="font-bold text-5xl">{queue_id}</b>
@@ -116,7 +116,7 @@ export default function PMM({
             <Breadboard />
             <ChatBox />
           </div>
-          <div className="relative h-full w-3/5 flex justify-center items-center">
+          <div className="relative h-full w-[50%] flex justify-center items-center">
             <MiniTuber />
           </div>
         </div>

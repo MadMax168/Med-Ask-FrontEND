@@ -20,7 +20,7 @@ export default function doc(){
 
   return (
     <main className="w-screen h-screen p-7 flex flex-row">
-      <div className="w-full h-full flex flex-col justify-between">
+      <div className="w-1/2 h-full flex flex-col justify-between">
         <div className="w-full h-[70px] pl-20 flex items-center">
           <h1>[username]</h1> {/* Link with database(user) */}
         </div>
