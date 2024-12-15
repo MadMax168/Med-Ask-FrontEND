@@ -75,7 +75,8 @@ export default function PMM({
 }) {
   const { queue_id } = use(params);
   const { stepState, updateStepStatus } = useStepStore();
-  const { isFinished, setFinished, messages, initMessages } = useChatbotStore();
+  const { messages, initMessages } = useChatbotStore();
+  const [ isFinished, setFinished ] = useState(false);
   // Push to finish page
   useEffect(() => {
     if (
@@ -93,7 +94,7 @@ export default function PMM({
   }
   
   
-  useEffect(() => {
+  const init_page = (): void => {
     updateStepStatus(0, 2);
     updateStepStatus(1, 1);
     updateStepStatus(2, 0);
@@ -106,6 +107,7 @@ export default function PMM({
   useEffect(() => {
     init_page();
   }, []);
+
 
   return (
     <main className="h-screen w-screen  ">
