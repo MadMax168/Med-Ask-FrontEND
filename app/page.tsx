@@ -21,9 +21,9 @@ export default function Home() {
     // console.log(stepState);
   }, [updateStepStatus]);
 
-  useEffect(() => {
-    saveDataAndChatHistory();
-  }, []);
+  // useEffect(() => {
+  //   saveDataAndChatHistory();
+  // }, []);
 
   const QSubmit = (e: React.FormEvent) => {
     e.preventDefault();
