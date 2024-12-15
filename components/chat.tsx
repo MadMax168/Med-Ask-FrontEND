@@ -40,6 +40,8 @@ export function ChatBox() {
 
   const [recognizedText, setRecognizedText] = useState("");
 
+  const { isSpeaking, setSpeaking } = useChatbotStore();
+
   const scrollToBottom = () => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({
@@ -53,6 +55,8 @@ export function ChatBox() {
     scrollToBottom();
   }, [messages]);
 
+  const [recognitionStatus, setRecognitionStatus] = useState<'active' | 'blocked'>('active');
+
   useEffect(() => {
     const texts = document.querySelector('.texts')!;
     const recognition = new webkitSpeechRecognition();
@@ -60,38 +64,48 @@ export function ChatBox() {
     recognition.continuous = true;
     recognition.interimResults = true;
 
+    // Block recognition after message sent
+    if (recognitionStatus === 'blocked') {
+      recognition.stop();
+      return () => {
+        recognition.stop();
+      };
+    }
+
     recognition.addEventListener('result', function (event) {
       const resultIndex = event.results.length - 1;
       const result = event.results[resultIndex];
       const text = result[0].transcript;
       const isFinal = result.isFinal;
-    
+
       console.log("Message: " + text);
       console.log("Is Final: ", isFinal);
-    
+
       let p = document.createElement('p');
       p.innerText = text;
-    
+
       // Clear previous content and add new sentence
       texts.innerHTML = '';
       texts.appendChild(p);
-    
+
       if (isFinal) {
         // Send the recognized speech to chatbot if final
         if (text.trim()) {
+          // Block recognition after sending message
+          setRecognitionStatus('blocked');
           handleSendMessage(text);
         }
       }
     });
+
     recognition.start();
 
     return () => {
       recognition.stop();
     };
-  }, []);
+  }, [recognitionStatus]);
 
-
-  
+  // Modify handleSendMessage to reset recognition status when bot responds
   const handleSendMessage = async (message: string) => {
     if (!message.trim()) return;
 
@@ -111,6 +125,41 @@ export function ChatBox() {
 
     await getNurseResponse(message, userMessageId + 1);
   };
+
+  // const getNurseResponse = async (userInput: string, nurseMessageId: number) => {
+  //   try {
+  //     // ... existing response handling ...
+
+  //     // Reset recognition status when bot responds
+  //     setRecognitionStatus('active');
+  //   } catch (error) {
+  //     // ... existing error handling ...
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
+
+
+  // const handleSendMessage = async (message: string) => {
+  //   if (!message.trim()) return;
+
+  //   const userMessageId = messages.length + 1;
+  //   const newUserMessage: ExtendedMessage = {
+  //     id: userMessageId,
+  //     text: message,
+  //     sender: "user",
+  //     type: "user",
+  //     feedback: null,
+  //   };
+
+  //   setInputMessage("");
+  //   setMessages(newUserMessage);
+  //   setIsLoading(true);
+  //   setError(null);
+
+  //   await getNurseResponse(message, userMessageId + 1);
+  // };
 
   const getNurseResponse = async (userInput: string, nurseMessageId: number) => {
     try {
@@ -145,6 +194,7 @@ export function ChatBox() {
 
       setMessages(newNurseMessage);
       handleGenerateVoice(nurseResponse);
+      
     } catch (error) {
       console.error("Error:", error);
       setError(error instanceof Error ? error.message : "An unknown error occurred");
@@ -162,7 +212,7 @@ export function ChatBox() {
   };
 
   const [loading, setLoading] = useState(false);
-  const { isSpeaking, setSpeaking } = useChatbotStore();
+
 
   const handleGenerateVoice = async (text: string) => {
     setLoading(true);
@@ -178,6 +228,8 @@ export function ChatBox() {
       audio.onended = () => {
         setSpeaking(false);
       };
+      
+      setRecognitionStatus('active');
     } catch (e: any) {
       setError(e.message || "An error occurred while generating the voice");
     } finally {
@@ -243,7 +295,12 @@ export function ChatBox() {
           Send
         </Button>
       </div>
-      <div className="texts"></div> {/* This div is used for displaying the recognized speech */}
+      <div className="texts"></div>
+      <div className="texts">
+        {recognitionStatus === 'active'
+          ? 'Voice recognition 🟢'
+          : 'Voice recognition 🔴'}
+      </div>
     </div>
   );
 }
