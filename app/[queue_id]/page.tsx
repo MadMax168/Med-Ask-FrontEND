@@ -75,8 +75,7 @@ export default function PMM({
 }) {
   const { queue_id } = use(params);
   const { stepState, updateStepStatus } = useStepStore();
-  const { messages, initMessages } = useChatbotStore();
-  const [isFinished, setFinished] = useState(true);
+  const { isFinished, setFinished, messages, initMessages } = useChatbotStore();
   // Push to finish page
   useEffect(() => {
     if (
@@ -92,15 +91,21 @@ export default function PMM({
     // Return a 404 page if the slug doesn't match the requirements
     notFound();
   }
-
+  
+  
   useEffect(() => {
     updateStepStatus(0, 2);
     updateStepStatus(1, 1);
     updateStepStatus(2, 0);
+    setFinished(false);
     // Reset Chat Data When Page Loaded
     initMessages();
     resetChatBot();
-  }, [updateStepStatus]);
+  }
+  
+  useEffect(() => {
+    init_page();
+  }, []);
 
   return (
     <main className="h-screen w-screen  ">
