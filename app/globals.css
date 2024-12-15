@@ -80,3 +80,14 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer base {
+  .radial-glow {
+    @apply absolute w-96 h-96 rounded-full bg-green-200 opacity-50 blur-3xl -z-10 
+  }
+  }
+  .noise {
+    position: absolute;
+    background: url('/effects/circle-grain2.jpeg');
+    z-index: 2;
+  }
