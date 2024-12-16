@@ -24,6 +24,7 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
+
   title: "MEDASK",
   description: "Mali Chatbot for electronics health data extraction",
 };

@@ -39,6 +39,7 @@ export async function fetchGeneratedVoice(
             volume: 100,
             speed: 1,
             type_media: "mp3",
+            // language: "EN",
             language: "th",
         };
     } else if (service === "vaja9") {

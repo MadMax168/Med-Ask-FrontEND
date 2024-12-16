@@ -63,6 +63,7 @@ export function ChatBox() {
     const texts = document.querySelector(".texts")!;
     const recognition = new webkitSpeechRecognition();
     recognition.lang = "th-TH";
+    //recognition.lang = "en-US";
     recognition.continuous = true;
     recognition.interimResults = true;
 
@@ -84,7 +85,7 @@ export function ChatBox() {
       console.log("Is Final: ", isFinal);
 
       setRecognizedText(text);
-
+      
       if (isFinal) {
         // Send the recognized speech to chatbot if final
         if (text.trim()) {
