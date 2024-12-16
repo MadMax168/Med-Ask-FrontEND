@@ -90,14 +90,10 @@ export default function PMM({
 }) {
   const { queue_id } = use(params);
   const { stepState, updateStepStatus } = useStepStore();
-<<<<<<< HEAD
-  const { messages, initMessages } = useChatbotStore();
-  const [isFinished, setFinished] = useState(false);
 
-=======
   const { isFinished, setFinished, messages, initMessages } = useChatbotStore();
   // Push to finish page
->>>>>>> 4e47e41680b49a421df9c970912521bc20d27636
+
   useEffect(() => {
     if (
       messages.length > 0 &&
@@ -112,13 +108,6 @@ export default function PMM({
   if (!isValidQueue(queue_id)) {
     notFound();
   }
-<<<<<<< HEAD
-
-  useEffect(() => {
-    updateStepStatus(0, 2);
-    updateStepStatus(1, 1);
-    updateStepStatus(2, 0);
-=======
   
   const init_page = (): void => {
     updateStepStatus(0, 2);
@@ -126,7 +115,7 @@ export default function PMM({
     updateStepStatus(2, 0);
     setFinished(false);
     // Reset Chat Data When Page Loaded
->>>>>>> 4e47e41680b49a421df9c970912521bc20d27636
+
     initMessages();
     resetChatBot();
   }
